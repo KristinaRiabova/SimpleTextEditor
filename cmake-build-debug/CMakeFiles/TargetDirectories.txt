@@ -1,0 +1,3 @@
+/Users/kristina_mbp/CLionProjects/SimpleTextEditor/cmake-build-debug/CMakeFiles/SimpleTextEditor.dir
+/Users/kristina_mbp/CLionProjects/SimpleTextEditor/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/kristina_mbp/CLionProjects/SimpleTextEditor/cmake-build-debug/CMakeFiles/rebuild_cache.dir
