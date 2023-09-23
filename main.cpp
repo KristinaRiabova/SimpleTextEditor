@@ -1,7 +1,37 @@
 #include <iostream>
 #include <algorithm>
-int main() {
 
+class Line {
+public:
+    Line(const std::string& text) : text(text) {}
+
+    void Append(const std::string& textToAdd) {
+        text += textToAdd;
+    }
+private:
+    std::string text;
+};
+
+class TextStorage {
+public:
+    void AppendText(const std::string& text) {
+        if (!lines.empty()) {
+            lines.back().Append(text);
+        }
+        else {
+            lines.emplace_back(text);
+        }
+        history.push_back(lines);
+    }
+private:
+    std::vector<Line> lines;
+    std::vector<std::vector<Line>> history;
+    size_t historyIndex = 0;
+    std::string clipboard;
+};
+
+int main() {
+    TextStorage storage;
     int choice;
 
     do {
@@ -23,6 +53,13 @@ int main() {
 
         switch (choice) {
 
+            case 1: {
+                std::cout << "Enter text to append: ";
+                std::string input;
+                std::getline(std::cin, input);
+                storage.AppendText(input);
+                break;
+            }
             case 0: {
                 std::cout << "Exiting the program." << std::endl;
                 break;
