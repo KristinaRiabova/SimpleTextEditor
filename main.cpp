@@ -8,6 +8,13 @@ public:
     void Append(const std::string& textToAdd) {
         text += textToAdd;
     }
+    void Delete(size_t index, size_t length) {
+        text.erase(index, length);
+    }
+
+    std::string GetText() const {
+        return text;
+    }
 private:
     std::string text;
 };
@@ -39,6 +46,16 @@ public:
             lines = history[historyIndex];
         }
     }
+    void Cut(size_t lineIndex, size_t index, size_t length) {
+        if (lineIndex < lines.size()) {
+            std::string cutText = lines[lineIndex].GetText().substr(index, length);
+            clipboard = cutText;
+            lines[lineIndex].Delete(index, length);
+            history.push_back(lines);
+            historyIndex = history.size() - 1;
+        }
+    }
+
 private:
     std::vector<Line> lines;
     std::vector<std::vector<Line>> history;
@@ -87,6 +104,13 @@ int main() {
             }
             case 4: {
                 storage.Redo();
+                break;
+            }
+            case 5: {
+                std::cout << "Enter line, index, and number of symbols to cut: ";
+                size_t lineIndex, index, length;
+                std::cin >> lineIndex >> index >> length;
+                storage.Cut(lineIndex, index, length);
                 break;
             }
             case 0: {
