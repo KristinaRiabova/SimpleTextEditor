@@ -23,6 +23,10 @@ public:
         }
         history.push_back(lines);
     }
+    void StartNewLine() {
+        lines.emplace_back("");
+        history.push_back(lines);
+    }
 private:
     std::vector<Line> lines;
     std::vector<std::vector<Line>> history;
@@ -58,6 +62,11 @@ int main() {
                 std::string input;
                 std::getline(std::cin, input);
                 storage.AppendText(input);
+                break;
+            }
+            case 2: {
+                storage.StartNewLine();
+                std::cout << "New line is started." << std::endl;
                 break;
             }
             case 0: {
