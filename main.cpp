@@ -27,6 +27,18 @@ public:
         lines.emplace_back("");
         history.push_back(lines);
     }
+    void Undo() {
+        if (historyIndex > 0) {
+            historyIndex--;
+            lines = history[historyIndex];
+        }
+    }
+    void Redo() {
+        if (historyIndex < history.size() - 1) {
+            historyIndex++;
+            lines = history[historyIndex];
+        }
+    }
 private:
     std::vector<Line> lines;
     std::vector<std::vector<Line>> history;
@@ -67,6 +79,14 @@ int main() {
             case 2: {
                 storage.StartNewLine();
                 std::cout << "New line is started." << std::endl;
+                break;
+            }
+            case 3: {
+                storage.Undo();
+                break;
+            }
+            case 4: {
+                storage.Redo();
                 break;
             }
             case 0: {
