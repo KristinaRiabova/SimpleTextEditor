@@ -71,6 +71,14 @@ public:
             historyIndex = history.size() - 1;
         }
     }
+    void InsertWithReplacement(size_t lineIndex, size_t index, const std::string& text) {
+        if (lineIndex < lines.size()) {
+            lines[lineIndex].Delete(index, text.length());
+            lines[lineIndex].Insert(index, text);
+            history.push_back(lines);
+            historyIndex = history.size() - 1;
+        }
+    }
 
 private:
     std::vector<Line> lines;
@@ -141,6 +149,17 @@ int main() {
                 size_t lineIndex, index;
                 std::cin >> lineIndex >> index;
                 storage.Paste(lineIndex, index);
+                break;
+            }
+            case 8: {
+                std::cout << "Enter line and index: ";
+                size_t lineIndex, index;
+                std::cin >> lineIndex >> index;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Write text: ";
+                std::string text;
+                std::getline(std::cin, text);
+                storage.InsertWithReplacement(lineIndex, index, text);
                 break;
             }
             case 0: {
