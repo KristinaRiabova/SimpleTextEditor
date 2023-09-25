@@ -8,6 +8,9 @@ public:
     void Append(const std::string& textToAdd) {
         text += textToAdd;
     }
+    void Insert(size_t index, const std::string& textToInsert) {
+        text.insert(index, textToInsert);
+    }
     void Delete(size_t index, size_t length) {
         text.erase(index, length);
     }
@@ -51,6 +54,19 @@ public:
             std::string cutText = lines[lineIndex].GetText().substr(index, length);
             clipboard = cutText;
             lines[lineIndex].Delete(index, length);
+            history.push_back(lines);
+            historyIndex = history.size() - 1;
+        }
+    }
+    void Copy(size_t lineIndex, size_t index, size_t length) {
+        if (lineIndex < lines.size()) {
+            clipboard = lines[lineIndex].GetText().substr(index, length);
+        }
+    }
+
+    void Paste(size_t lineIndex, size_t index) {
+        if (!clipboard.empty() && lineIndex < lines.size()) {
+            lines[lineIndex].Insert(index, clipboard);
             history.push_back(lines);
             historyIndex = history.size() - 1;
         }
@@ -111,6 +127,20 @@ int main() {
                 size_t lineIndex, index, length;
                 std::cin >> lineIndex >> index >> length;
                 storage.Cut(lineIndex, index, length);
+                break;
+            }
+            case 6: {
+                std::cout << "Enter line, index, and number of symbols to copy: ";
+                size_t lineIndex, index, length;
+                std::cin >> lineIndex >> index >> length;
+                storage.Copy(lineIndex, index, length);
+                break;
+            }
+            case 7: {
+                std::cout << "Enter line and index to paste: ";
+                size_t lineIndex, index;
+                std::cin >> lineIndex >> index;
+                storage.Paste(lineIndex, index);
                 break;
             }
             case 0: {
