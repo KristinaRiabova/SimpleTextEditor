@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <string>
 #include <algorithm>
 
 class Line {
@@ -8,9 +10,11 @@ public:
     void Append(const std::string& textToAdd) {
         text += textToAdd;
     }
+
     void Insert(size_t index, const std::string& textToInsert) {
         text.insert(index, textToInsert);
     }
+
     void Delete(size_t index, size_t length) {
         text.erase(index, length);
     }
@@ -18,6 +22,7 @@ public:
     std::string GetText() const {
         return text;
     }
+
 private:
     std::string text;
 };
@@ -33,22 +38,26 @@ public:
         }
         history.push_back(lines);
     }
+
     void StartNewLine() {
         lines.emplace_back("");
         history.push_back(lines);
     }
+
     void Undo() {
         if (historyIndex > 0) {
             historyIndex--;
             lines = history[historyIndex];
         }
     }
+
     void Redo() {
         if (historyIndex < history.size() - 1) {
             historyIndex++;
             lines = history[historyIndex];
         }
     }
+
     void Cut(size_t lineIndex, size_t index, size_t length) {
         if (lineIndex < lines.size()) {
             std::string cutText = lines[lineIndex].GetText().substr(index, length);
@@ -58,6 +67,7 @@ public:
             historyIndex = history.size() - 1;
         }
     }
+
     void Copy(size_t lineIndex, size_t index, size_t length) {
         if (lineIndex < lines.size()) {
             clipboard = lines[lineIndex].GetText().substr(index, length);
@@ -71,6 +81,7 @@ public:
             historyIndex = history.size() - 1;
         }
     }
+
     void InsertWithReplacement(size_t lineIndex, size_t index, const std::string& text) {
         if (lineIndex < lines.size()) {
             lines[lineIndex].Delete(index, text.length());
@@ -79,6 +90,7 @@ public:
             historyIndex = history.size() - 1;
         }
     }
+
     void Delete(size_t lineIndex, size_t index, size_t length) {
         if (lineIndex < lines.size()) {
             lines[lineIndex].Delete(index, length);
@@ -122,7 +134,6 @@ int main() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (choice) {
-
             case 1: {
                 std::cout << "Enter text to append: ";
                 std::string input;
