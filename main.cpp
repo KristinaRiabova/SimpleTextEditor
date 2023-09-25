@@ -79,6 +79,19 @@ public:
             historyIndex = history.size() - 1;
         }
     }
+    void Delete(size_t lineIndex, size_t index, size_t length) {
+        if (lineIndex < lines.size()) {
+            lines[lineIndex].Delete(index, length);
+            history.push_back(lines);
+            historyIndex = history.size() - 1;
+        }
+    }
+
+    void PrintText() {
+        for (const auto& line : lines) {
+            std::cout << line.GetText() << std::endl;
+        }
+    }
 
 private:
     std::vector<Line> lines;
@@ -160,6 +173,18 @@ int main() {
                 std::string text;
                 std::getline(std::cin, text);
                 storage.InsertWithReplacement(lineIndex, index, text);
+                break;
+            }
+            case 9: {
+                std::cout << "Enter line, index, and number of symbols to delete: ";
+                size_t lineIndex, index, length;
+                std::cin >> lineIndex >> index >> length;
+                storage.Delete(lineIndex, index, length);
+                break;
+            }
+            case 10: {
+                std::cout << "Current Text:" << std::endl;
+                storage.PrintText();
                 break;
             }
             case 0: {
