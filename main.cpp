@@ -117,6 +117,13 @@ public:
         }
         return count;
     }
+    void InsertSubstring(size_t lineIndex, size_t index, const std::string& substring) {
+        if (lineIndex < lines.size()) {
+            lines[lineIndex].Insert(index, substring);
+            history.push_back(lines);
+            historyIndex = history.size() - 1;
+        }
+    }
 
 private:
     std::vector<Line> lines;
@@ -222,6 +229,16 @@ int main() {
                 std::getline(std::cin, substring);
                 size_t count = storage.SearchForText(substring);
                 std::cout << "Found " << count << " occurrences of '" << substring << "'" << std::endl;
+                break;
+            }
+            case 14: {
+                std::cout << "Enter line, index, and substring to insert: ";
+                size_t lineIndex, index;
+                std::string substring;
+                std::cin >> lineIndex >> index;
+                std::cin.ignore();
+                std::getline(std::cin, substring);
+                storage.InsertSubstring(lineIndex, index, substring);
                 break;
             }
             case 0: {
