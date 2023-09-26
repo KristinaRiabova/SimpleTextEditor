@@ -104,6 +104,19 @@ public:
             std::cout << line.GetText() << std::endl;
         }
     }
+    size_t SearchForText(const std::string& substring) {
+        size_t count = 0;
+        for (size_t i = 0; i < lines.size(); ++i) {
+            std::string lineText = lines[i].GetText();
+            size_t pos = 0;
+            while ((pos = lineText.find(substring, pos)) != std::string::npos) {
+                std::cout << "Found at line " << i << ", index " << pos << std::endl;
+                pos += substring.length();
+                count++;
+            }
+        }
+        return count;
+    }
 
 private:
     std::vector<Line> lines;
@@ -128,6 +141,10 @@ int main() {
         std::cout << "8. Insert with replacement" << std::endl;
         std::cout << "9. Delete" << std::endl;
         std::cout << "10. Print the current text to console" << std::endl;
+        std::cout << "11. Search for text" << std::endl;
+        std::cout << "12. Load text from file" << std::endl;
+        std::cout << "13. Save text to file" << std::endl;
+        std::cout << "14. Insert substring" << std::endl;
         std::cout << "0. Exit" << std::endl;
         std::cout << "Enter your choice: ";
         std::cin >> choice;
@@ -196,6 +213,15 @@ int main() {
             case 10: {
                 std::cout << "Current Text:" << std::endl;
                 storage.PrintText();
+                break;
+            }
+            case 11: {
+                std::cout << "Enter substring to search for: ";
+                std::string substring;
+                std::cin.ignore();
+                std::getline(std::cin, substring);
+                size_t count = storage.SearchForText(substring);
+                std::cout << "Found " << count << " occurrences of '" << substring << "'" << std::endl;
                 break;
             }
             case 0: {
