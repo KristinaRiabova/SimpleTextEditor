@@ -118,18 +118,22 @@ public:
         }
     }
     size_t SearchForText(const std::string& substring) {
-        size_t count = 0;
+        bool found = false;
         for (size_t i = 0; i < lines.size(); ++i) {
             std::string lineText = lines[i].GetText();
             size_t pos = 0;
             while ((pos = lineText.find(substring, pos)) != std::string::npos) {
-                std::cout << "Found at line " << i << ", index " << pos << std::endl;
+                std::cout << "Text is present in this position: " << i << " " << pos-1 << std::endl;
                 pos += substring.length();
-                count++;
+                found = true;
             }
         }
-        return count;
+        if (!found) {
+            std::cout << "Text not found." << std::endl;
+        }
+        return 0;
     }
+
     void LoadTextFromFile(const std::string& filename) {
         std::ifstream file(filename);
         if (file.is_open()) {
@@ -271,8 +275,7 @@ int main() {
                 std::string substring;
                 std::cin.ignore();
                 std::getline(std::cin, substring);
-                size_t count = storage.SearchForText(substring);
-                std::cout << "Found " << count << " occurrences of '" << substring << "'" << std::endl;
+                storage.SearchForText(substring);
                 break;
             }
             case 12: {
