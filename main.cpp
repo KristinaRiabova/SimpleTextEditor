@@ -1,8 +1,13 @@
 #include <iostream>
+#include <cstring>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <fstream>
+#include <dlfcn.h>
+#include <sstream>
+
+
 
 class Line {
 public:
@@ -33,8 +38,7 @@ public:
     void AppendText(const std::string& text) {
         if (!lines.empty()) {
             lines.back().Append(text);
-        }
-        else {
+        } else {
             lines.emplace_back(text);
         }
         history.push_back(lines);
@@ -100,10 +104,6 @@ public:
         }
     }
 
-
-
-
-
     void Delete(size_t lineIndex, size_t index, size_t length) {
         if (lineIndex < lines.size()) {
             lines[lineIndex].Delete(index, length);
@@ -117,13 +117,14 @@ public:
             std::cout << line.GetText() << std::endl;
         }
     }
+
     size_t SearchForText(const std::string& substring) {
         bool found = false;
         for (size_t i = 0; i < lines.size(); ++i) {
             std::string lineText = lines[i].GetText();
             size_t pos = 0;
             while ((pos = lineText.find(substring, pos)) != std::string::npos) {
-                std::cout << "Text is present in this position: " << i << " " << pos-1 << std::endl;
+                std::cout << "Text is present in this position: " << i << " " << pos - 1 << std::endl;
                 pos += substring.length();
                 found = true;
             }
@@ -173,6 +174,26 @@ public:
         }
     }
 
+    std::string GetText() {
+        std::string text;
+        for (const auto& line : lines) {
+            text += line.GetText() + '\n';
+        }
+        return text;
+    }
+
+    void SetText(const std::string& newText) {
+        lines.clear();
+        std::istringstream iss(newText);
+        std::string line;
+        while (std::getline(iss, line)) {
+            lines.emplace_back(line);
+        }
+        history.clear();
+        history.push_back(lines);
+        historyIndex = 0;
+    }
+
 private:
     std::vector<Line> lines;
     std::vector<std::vector<Line>> history;
@@ -181,6 +202,9 @@ private:
 };
 
 int main() {
+    void* handle = dlopen("/Users/kristina_mbp/CLionProjects/CaesarEncryptionAlgorithm/caesar.dylib", RTLD_LAZY);
+    char* (*encryptFunction)(const char*, int) = (char* (*)(const char*, int))dlsym(handle, "encrypt");
+    char* (*decryptFunction)(const char*, int) = (char* (*)(const char*, int))dlsym(handle, "decrypt");
     TextStorage storage;
     int choice;
 
@@ -200,6 +224,8 @@ int main() {
         std::cout << "12. Load text from file" << std::endl;
         std::cout << "13. Save text to file" << std::endl;
         std::cout << "14. Insert substring" << std::endl;
+        std::cout << "15. Encrypt text" << std::endl;
+        std::cout << "16. Decrypt text" << std::endl;
         std::cout << "0. Exit" << std::endl;
         std::cout << "Enter your choice: ";
         std::cin >> choice;
@@ -304,6 +330,38 @@ int main() {
                 storage.InsertSubstring(lineIndex, index, substring);
                 break;
             }
+            case 15: {
+                std::cout << "Enter encryption key: ";
+                int key;
+                std::cin >> key;
+
+                std::string encryptedText = storage.GetText();
+                char* rawEncryptedText = new char[encryptedText.size() + 1];
+                std::strcpy(rawEncryptedText, encryptedText.c_str());
+
+                char* encrypted = encryptFunction(rawEncryptedText, key);
+
+                delete[] rawEncryptedText;
+                storage.SetText(encrypted);
+                delete[] encrypted;
+                break;
+            }
+            case 16: {
+                std::cout << "Enter decryption key: ";
+                int key;
+                std::cin >> key;
+
+                std::string decryptedText = storage.GetText();
+                char* rawDecryptedText = new char[decryptedText.size() + 1];
+                std::strcpy(rawDecryptedText, decryptedText.c_str());
+
+                char* decrypted = decryptFunction(rawDecryptedText, key);
+
+                delete[] rawDecryptedText;
+                storage.SetText(decrypted);
+                delete[] decrypted;
+                break;
+            }
             case 0: {
                 std::cout << "Exiting the program." << std::endl;
                 break;
@@ -314,5 +372,6 @@ int main() {
         }
     } while (choice != 0);
 
+    dlclose(handle);
     return 0;
 }
