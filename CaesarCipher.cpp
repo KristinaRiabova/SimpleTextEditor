@@ -7,9 +7,7 @@ void* CaesarCipher::handle = nullptr;
 CaesarCipher::CaesarCipher() {
 
     handle = dlopen("/Users/kristina_mbp/CLionProjects/CaesarEncryptionAlgorithm/caesar.dylib", RTLD_LAZY);
-    if (!handle) {
-        handle = nullptr;
-    }
+
 }
 
 CaesarCipher::~CaesarCipher() {
